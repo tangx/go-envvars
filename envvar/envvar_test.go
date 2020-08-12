@@ -20,7 +20,8 @@ var p = Person{"zhangsan", 10, true, "zhangsan@goole.com"}
 
 func Test_marshal(t *testing.T) {
 
-	err := Get(&p, "USER")
+	fmtter := New().SetPrefix("USER").ToUpper()
+	err := GetEnv(&p, fmtter)
 	if err != nil {
 		log.Error(err)
 	}
@@ -32,11 +33,11 @@ func Test_marshal(t *testing.T) {
 		convey.So(p.Gender, ShouldBeFalse)
 		convey.So(p.EmailAddress, ShouldEqual, "wangwu@qq.com")
 	})
-
 }
 
 func Test_Set(t *testing.T) {
-	Set(p, "USER")
+	f := New().SetPrefix("USER").ToUpper()
+	SetEnv(p, f)
 
 	convey.Convey("Set env variable", t, func() {
 		convey.So(os.Getenv("USER_NAME"), ShouldEqual, "wangwu")

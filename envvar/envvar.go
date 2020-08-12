@@ -10,8 +10,38 @@ import (
 	"strings"
 )
 
+type Formatter struct {
+	prefix  string
+	suffix  string
+	handler func(string) string
+}
+
+func New() Formatter {
+	return Formatter{"", "", strings.ToUpper}
+}
+func (ev Formatter) SetPrefix(s string) Formatter {
+	ev.prefix = s
+	return ev
+}
+func (ev Formatter) SetSuffix(s string) Formatter {
+	ev.suffix = s
+	return ev
+}
+func (ev Formatter) ToUpper() Formatter {
+	ev.handler = strings.ToUpper
+	return ev
+}
+func (ev Formatter) ToLower() Formatter {
+	ev.handler = strings.ToLower
+	return ev
+}
+func (ev Formatter) ToTitle() Formatter {
+	ev.handler = strings.ToTitle
+	return ev
+}
+
 // GetEnv get enviroment varible's value into struct
-func GetEnv(ptr interface{}, prefix string) error {
+func GetEnv(ptr interface{}, f Formatter) error {
 
 	m := make(map[string]interface{})
 
@@ -44,7 +74,8 @@ func GetEnv(ptr interface{}, prefix string) error {
 			continue
 		}
 
-		envName := fmt.Sprintf("%s_%s", prefix, strings.ToUpper(name))
+		// envName := fmt.Sprintf("%s_%s", prefix, strings.ToUpper(name))
+		envName := format(name, f)
 		envValue := os.Getenv(envName)
 
 		switch sFiled.Type.Kind() {
@@ -72,7 +103,7 @@ func GetEnv(ptr interface{}, prefix string) error {
 }
 
 // SetEnv set struct value to envirotment
-func SetEnv(v interface{}, prefix string) {
+func SetEnv(v interface{}, f Formatter) {
 
 	rv := reflect.Indirect(reflect.ValueOf(v))
 
@@ -86,7 +117,8 @@ func SetEnv(v interface{}, prefix string) {
 			}
 
 			sValue := rv.Field(i)
-			envName := fmt.Sprintf("%s_%s", prefix, strings.ToUpper(th))
+			// envName := fmt.Sprintf("%s_%s", prefix, strings.ToUpper(th))
+			envName := format(th, f)
 
 			switch sValue.Kind() {
 			case reflect.String:
@@ -102,6 +134,9 @@ func SetEnv(v interface{}, prefix string) {
 }
 
 func MustParseInteger(s string) (n int64) {
+	if s == "" {
+		return 0
+	}
 	n, err := strconv.ParseInt(s, 10, 64)
 	if err != nil {
 		panic(err)
@@ -110,9 +145,21 @@ func MustParseInteger(s string) (n int64) {
 }
 
 func MustParseBool(s string) (ok bool) {
+	if s == "" {
+		return false
+	}
 	ok, err := strconv.ParseBool(s)
 	if err != nil {
 		panic(err)
 	}
 	return
+}
+
+func format(s string, f Formatter) string {
+	r := fmt.Sprintf("%s_%s_%s",
+		f.prefix,
+		f.handler(s),
+		f.suffix)
+
+	return strings.Trim(r, "_")
 }
