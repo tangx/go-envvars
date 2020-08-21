@@ -20,7 +20,8 @@ var p = Person{"zhangsan", 10, true, "zhangsan@goole.com"}
 
 func Test_marshal(t *testing.T) {
 
-	fmtter := New().SetPrefix("USER").ToUpper()
+	// fmtter := NewDefaultFormatter().SetPrefix("USER").ToUpper()
+	fmtter := NewFormatter("USER", "", 0)
 	err := GetEnv(&p, fmtter)
 	if err != nil {
 		log.Error(err)
@@ -36,7 +37,7 @@ func Test_marshal(t *testing.T) {
 }
 
 func Test_Set(t *testing.T) {
-	f := New().SetPrefix("USER").ToUpper()
+	f := NewDefaultFormatter().SetPrefix("USER").ToUpper()
 	SetEnv(p, f)
 
 	convey.Convey("Set env variable", t, func() {

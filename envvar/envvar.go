@@ -10,36 +10,6 @@ import (
 	"strings"
 )
 
-type Formatter struct {
-	prefix  string
-	suffix  string
-	handler func(string) string
-}
-
-func New() Formatter {
-	return Formatter{"", "", strings.ToUpper}
-}
-func (ev Formatter) SetPrefix(s string) Formatter {
-	ev.prefix = s
-	return ev
-}
-func (ev Formatter) SetSuffix(s string) Formatter {
-	ev.suffix = s
-	return ev
-}
-func (ev Formatter) ToUpper() Formatter {
-	ev.handler = strings.ToUpper
-	return ev
-}
-func (ev Formatter) ToLower() Formatter {
-	ev.handler = strings.ToLower
-	return ev
-}
-func (ev Formatter) ToTitle() Formatter {
-	ev.handler = strings.ToTitle
-	return ev
-}
-
 // GetEnv get enviroment varible's value into struct
 func GetEnv(ptr interface{}, f Formatter) error {
 
