@@ -44,9 +44,12 @@ func GetEnv(ptr interface{}, f Formatter) error {
 			continue
 		}
 
-		// envName := fmt.Sprintf("%s_%s", prefix, strings.ToUpper(name))
 		envName := format(name, f)
-		envValue := os.Getenv(envName)
+
+		envValue, ok := os.LookupEnv(envName)
+		if !ok {
+			continue
+		}
 
 		switch sFiled.Type.Kind() {
 		case reflect.String:
