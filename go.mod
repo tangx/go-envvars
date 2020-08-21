@@ -1,9 +1,3 @@
 module github.com/tangx/go-envvars
 
-go 1.14
-
-require (
-	github.com/coredns/coredns v1.7.0
-	github.com/davecgh/go-spew v1.1.1
-	github.com/smartystreets/goconvey v0.0.0-20190330032615-68dc04aab96a
-)
+go 1.15
