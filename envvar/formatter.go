@@ -22,10 +22,6 @@ func NewFormatter(pre, post string, formatter int) Formatter {
 	}
 }
 
-func NewDefaultFormatter() Formatter {
-	return Formatter{"", "", strings.ToUpper}
-}
-
 func (f Formatter) SetPrefix(s string) Formatter {
 	f.prefix = s
 	return f

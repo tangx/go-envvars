@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+var DefaultFormatter = NewFormatter("", "", 0)
+
 // GetEnv get enviroment varible's value into struct
 func GetEnv(ptr interface{}, f Formatter) error {
 
