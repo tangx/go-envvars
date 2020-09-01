@@ -5,8 +5,6 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 var m = make(map[string]string)
@@ -55,7 +53,13 @@ func Unmarshal(prefix string, v interface{}) (err error) {
 
 	}
 
-	spew.Dump(m)
+	// spew.Dump(m)
 
+	b, err := YamlMarshal(m)
+	if err != nil {
+		return err
+	}
+
+	err = WriteToFile("config.yml", b)
 	return
 }

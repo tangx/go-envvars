@@ -1,2 +1,4 @@
 .vscode
 go.sum
+.DS_Store
+config.yml
