@@ -17,7 +17,7 @@ func TestParse(t *testing.T) {
 
 type Person struct {
 	Name    string `env:"name,omitempty" default:"zhuageliang"`
-	Age     int32  `env:"age,omitempty" default:"18"`
+	Age     uint   `env:"age,omitempty" default:"18"`
 	Gender  bool   `env:"gender,omitempty" default:"true"`
 	Address `env:"address"`
 }

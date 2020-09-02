@@ -33,23 +33,21 @@ func Unmarshal(prefix string, v interface{}) (err error) {
 		}
 
 		key := strings.ToUpper(fmt.Sprintf("%s__%s", prefix, envTagName))
-		// m[key] = rv.Field(i).String()
-		// fmt.Println("key=", key)
 
 		sValue := rv.Field(i)
 
 		switch sValue.Kind() {
 		case reflect.String:
-			val := sValue.String()
-			m[key] = defaultString(sFiled, val)
+			m[key] = defaultString(sFiled, sValue.String())
 
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-			// m[key] = strconv.FormatInt(sValue.Int(), 10)
-			m[key] = int64(sValue.Int())
+			m[key] = defaultIntn(sFiled, sValue.Int())
+
+		case reflect.Uint, reflect.Uint8, reflect.Uint32, reflect.Uint64:
+			m[key] = defaultUintn(sFiled, sValue.Uint())
 
 		case reflect.Bool:
-			// m[key] = strconv.FormatBool(sValue.Bool())
-			m[key] = sValue.Bool()
+			m[key] = defaultBool(sFiled, sValue.Bool())
 
 		case reflect.Struct:
 			_ = Unmarshal(key, sValue.Interface())
@@ -92,4 +90,38 @@ func defaultBool(sFiled reflect.StructField, value bool) bool {
 	_, err := strconv.ParseBool(tmp)
 	return err == nil
 
+}
+
+func defaultIntn(sFiled reflect.StructField, value int64) int64 {
+	if value != 0 {
+		return value
+	}
+
+	tag, ok := sFiled.Tag.Lookup("default")
+	if !ok {
+		return 0
+	}
+	tmp := strings.Split(tag, ",")[0]
+	i, err := strconv.ParseInt(tmp, 10, 64)
+	if err != nil {
+		return 0
+	}
+	return i
+}
+
+func defaultUintn(sFiled reflect.StructField, value uint64) uint64 {
+	if value != 0 {
+		return value
+	}
+
+	tag, ok := sFiled.Tag.Lookup("default")
+	if !ok {
+		return 0
+	}
+	tmp := strings.Split(tag, ",")[0]
+	i, err := strconv.ParseUint(tmp, 10, 64)
+	if err != nil {
+		return 0
+	}
+	return i
 }
