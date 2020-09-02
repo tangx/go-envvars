@@ -12,21 +12,32 @@ import (
 )
 
 // Pump value from env to struct
-// v should be a ptr
-func Pump(ptr interface{}, prefix string, m map[string]interface{}) {
+func Pump(v interface{}, prefix string) error {
+	m := map[string]interface{}{}
 
-	// spew.Dump(ptr)
+	pump(v, prefix, m)
 
-	rvPtr := reflect.ValueOf(ptr)
-	if rvPtr.Kind() == reflect.Ptr {
-		return
+	b, err := yaml.Marshal(m)
+	if err != nil {
+		return err
 	}
+
+	return yaml.Unmarshal(b, v)
+}
+
+// pump value from env to struct
+// v should be a ptr
+func pump(v interface{}, prefix string, m map[string]interface{}) {
+
+	rvPtr := reflect.ValueOf(v)
+	// if rvPtr.Kind() == reflect.Ptr {
+	// 	return
+	// }
 
 	rv := reflect.Indirect(rvPtr)
 	typ := rv.Type()
 	for i := 0; i < typ.NumField(); i++ {
 		sFiled := typ.Field(i)
-		// spew.Dump(sFiled)
 		tag, ok := sFiled.Tag.Lookup("env")
 		if !ok {
 			continue
@@ -34,7 +45,6 @@ func Pump(ptr interface{}, prefix string, m map[string]interface{}) {
 		tagName := strings.Split(tag, ",")[0]
 
 		key := strings.ToUpper(fmt.Sprintf("%s__%s", prefix, tagName))
-		// fmt.Printf("key( %s ) = value ( %s )\n", key, os.Getenv(key))
 
 		sValue := rv.Field(i)
 		switch sValue.Kind() {
@@ -42,36 +52,23 @@ func Pump(ptr interface{}, prefix string, m map[string]interface{}) {
 			m[tagName] = os.Getenv(key)
 
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-			m[tagName] = ShouldInt(os.Getenv(key))
+			m[tagName] = shouldInt(os.Getenv(key))
 
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-			m[tagName] = ShouldUint(os.Getenv(key))
+			m[tagName] = shouldUint(os.Getenv(key))
 
 		case reflect.Bool:
-			m[tagName] = ShouldBool(os.Getenv(key))
+			m[tagName] = shouldBool(os.Getenv(key))
 
 		case reflect.Struct:
 			// fmt.Printf("m[%s]", tagName)
 			m2 := map[string]interface{}{}
-			Pump(sValue.Interface(), key, m2)
+			pump(sValue.Interface(), key, m2)
 
 			m[tagName] = m2
 		}
 	}
-	// spew.Dump(m)
 
-	// fmt.Printf("%s\n", m)
-
-	// b, err := json.Marshal(m)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// fmt.Printf("%s\n", b)
-	// err = json.Unmarshal(b, ptr)
-	// if err != nil {
-	// 	panic(err)
-	// }
 }
 
 // Pump
@@ -87,13 +84,13 @@ func PumpFileToEnv(file string) (err error) {
 	}
 
 	for k, v := range m {
-		os.Setenv(k, convert(v))
+		os.Setenv(k, shouldString(v))
 	}
 
 	return nil
 }
 
-func convert(v interface{}) string {
+func shouldString(v interface{}) string {
 	rv := reflect.ValueOf(v)
 	typ := rv.Type()
 
@@ -112,19 +109,19 @@ func convert(v interface{}) string {
 	return ""
 }
 
-func ShouldBool(str string) bool {
+func shouldBool(str string) bool {
 	boolean, _ := strconv.ParseBool(str)
 
 	return boolean
 }
 
-func ShouldInt(str string) int64 {
+func shouldInt(str string) int64 {
 	i, _ := strconv.ParseInt(str, 10, 64)
 
 	return i
 }
 
-func ShouldUint(str string) uint64 {
+func shouldUint(str string) uint64 {
 	i, _ := strconv.ParseUint(str, 10, 64)
 	return i
 }

@@ -1,7 +1,6 @@
 package envcfg
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"testing"
@@ -22,15 +21,16 @@ func TestPump(t *testing.T) {
 	var p = Person{
 		// Name: "wusangui",
 	}
-	m := map[string]interface{}{}
-	Pump(p, "USER", m)
-	// fmt.Println("over")
+	_ = Pump(&p, "USER")
+	// m := map[string]interface{}{}
+	// pump(p, "USER", m)
+	// // fmt.Println("over")
 
-	spew.Dump(m)
-	b, _ := json.Marshal(m)
-	fmt.Printf("%s", b)
+	// spew.Dump(m)
+	// b, _ := json.Marshal(m)
+	// fmt.Printf("%s", b)
 
-	_ = json.Unmarshal(b, &p)
+	// _ = json.Unmarshal(b, &p)
 	spew.Dump(p)
 }
 
