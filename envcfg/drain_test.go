@@ -16,14 +16,14 @@ func TestDrain(t *testing.T) {
 }
 
 type Person struct {
-	Name    string `env:"name,omitempty" default:"zhuageliang"`
-	Age     uint   `env:"age,omitempty" default:"18"`
-	Gender  bool   `env:"gender,omitempty" default:"true"`
-	Address `env:"address"`
+	Name    string `env:"name,omitempty" default:"zhuageliang" yaml:"name,omitempty" json:"name,omitempty"`
+	Age     uint   `env:"age,omitempty" default:"18" yaml:"age,omitempty" json:"age,omitempty"`
+	Gender  bool   `env:"gender,omitempty" default:"true" yaml:"gender,omitempty" json:"gender,omitempty"`
+	Address `env:"address,omitempty" yaml:"address,omitempty" json:"address,omitempty"`
 }
 
 type Address struct {
-	City   string `env:"city" default:"sichuan"`
-	Street string `env:"street" `
-	Number int64  `env:"number" default:"100"`
+	City   string `env:"city,omitempty" default:"sichuan" yaml:"city,omitempty" json:"city,omitempty"`
+	Street string `env:"street,omitempty" yaml:"street,omitempty" json:"street,omitempty"`
+	Number int64  `env:"number,omitempty" default:"100" yaml:"number,omitempty" json:"number,omitempty"`
 }
