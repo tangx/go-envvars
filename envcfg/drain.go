@@ -9,8 +9,8 @@ import (
 
 var m = make(map[string]interface{})
 
-// Unmarshal convert struct to os env
-func Unmarshal(prefix string, v interface{}) (err error) {
+// Drain convert struct to os env
+func Drain(prefix string, v interface{}) (err error) {
 	// spew.Dump(v)
 
 	rv := reflect.Indirect(reflect.ValueOf(v))
@@ -41,16 +41,16 @@ func Unmarshal(prefix string, v interface{}) (err error) {
 			m[key] = defaultString(sFiled, sValue.String())
 
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-			m[key] = defaultIntn(sFiled, sValue.Int())
+			m[key] = defaultInt(sFiled, sValue.Int())
 
 		case reflect.Uint, reflect.Uint8, reflect.Uint32, reflect.Uint64:
-			m[key] = defaultUintn(sFiled, sValue.Uint())
+			m[key] = defaultUint(sFiled, sValue.Uint())
 
 		case reflect.Bool:
 			m[key] = defaultBool(sFiled, sValue.Bool())
 
 		case reflect.Struct:
-			_ = Unmarshal(key, sValue.Interface())
+			_ = Drain(key, sValue.Interface())
 
 		}
 
@@ -92,7 +92,7 @@ func defaultBool(sFiled reflect.StructField, value bool) bool {
 
 }
 
-func defaultIntn(sFiled reflect.StructField, value int64) int64 {
+func defaultInt(sFiled reflect.StructField, value int64) int64 {
 	if value != 0 {
 		return value
 	}
@@ -109,7 +109,7 @@ func defaultIntn(sFiled reflect.StructField, value int64) int64 {
 	return i
 }
 
-func defaultUintn(sFiled reflect.StructField, value uint64) uint64 {
+func defaultUint(sFiled reflect.StructField, value uint64) uint64 {
 	if value != 0 {
 		return value
 	}

@@ -4,14 +4,14 @@ import (
 	"testing"
 )
 
-func TestParse(t *testing.T) {
+func TestDrain(t *testing.T) {
 
 	// p := Person{"zhangsan", 10, true, Address{"sichuan", "chengdu", 10}}
 
 	p := Person{
 		Name: "zhangsan",
 	}
-	_ = Unmarshal("USER", p)
+	_ = Drain("USER", p)
 
 }
 
