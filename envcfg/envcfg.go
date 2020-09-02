@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var m = make(map[string]string)
+var m = make(map[string]interface{})
 
 // Unmarshal convert struct to os env
 func Unmarshal(prefix string, v interface{}) (err error) {
@@ -41,14 +41,15 @@ func Unmarshal(prefix string, v interface{}) (err error) {
 		switch sValue.Kind() {
 		case reflect.String:
 			val := sValue.String()
-
 			m[key] = defaultString(sFiled, val)
 
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-			m[key] = strconv.FormatInt(sValue.Int(), 10)
+			// m[key] = strconv.FormatInt(sValue.Int(), 10)
+			m[key] = int64(sValue.Int())
 
 		case reflect.Bool:
-			m[key] = strconv.FormatBool(sValue.Bool())
+			// m[key] = strconv.FormatBool(sValue.Bool())
+			m[key] = sValue.Bool()
 
 		case reflect.Struct:
 			_ = Unmarshal(key, sValue.Interface())
@@ -56,8 +57,6 @@ func Unmarshal(prefix string, v interface{}) (err error) {
 		}
 
 	}
-
-	// spew.Dump(m)
 
 	b, err := YamlMarshal(m)
 	if err != nil {
@@ -72,12 +71,25 @@ func defaultString(sFiled reflect.StructField, value string) string {
 	if value != "" {
 		return value
 	}
-
 	tag, ok := sFiled.Tag.Lookup("default")
 	if !ok {
 		return ""
 	}
-
 	return strings.Split(tag, ",")[0]
+}
+
+func defaultBool(sFiled reflect.StructField, value bool) bool {
+
+	if value {
+		return value
+	}
+	tag, ok := sFiled.Tag.Lookup("default")
+	if !ok {
+		return false
+	}
+
+	tmp := strings.Split(tag, ",")[0]
+	_, err := strconv.ParseBool(tmp)
+	return err == nil
 
 }
