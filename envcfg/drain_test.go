@@ -11,7 +11,7 @@ func TestDrain(t *testing.T) {
 	p := Person{
 		Name: "zhangsan",
 	}
-	_ = Drain("USER", p)
+	_ = Drain(p, "USER")
 
 }
 
@@ -25,5 +25,5 @@ type Person struct {
 type Address struct {
 	City   string `env:"city,omitempty" default:"sichuan" yaml:"city,omitempty" json:"city,omitempty"`
 	Street string `env:"street,omitempty" yaml:"street,omitempty" json:"street,omitempty"`
-	Number int64  `env:"number,omitempty" default:"100" yaml:"number,omitempty" json:"number,omitempty"`
+	Number int64  `env:"number,omitempty" default:"99999182" yaml:"number,omitempty" json:"number,omitempty"`
 }

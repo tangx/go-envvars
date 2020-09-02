@@ -7,21 +7,22 @@ import (
 	"strings"
 )
 
-var m = make(map[string]interface{})
+func Drain(v interface{}, prefix string) error {
+	m := map[string]interface{}{}
 
-// Drain convert struct to os env
-func Drain(prefix string, v interface{}) (err error) {
-	// spew.Dump(v)
+	return drain(v, prefix, m)
+}
+
+// drain convert struct to os env
+func drain(v interface{}, prefix string, m map[string]interface{}) (err error) {
 
 	rv := reflect.Indirect(reflect.ValueOf(v))
 
 	typ := rv.Type()
 	for i := 0; i < typ.NumField(); i++ {
 		sFiled := typ.Field(i)
-		// spew.Dump(sFiled)
 
 		envTag, ok := sFiled.Tag.Lookup("env")
-		// fmt.Println("envTag=", envTag)
 
 		if !ok {
 			continue
@@ -50,8 +51,7 @@ func Drain(prefix string, v interface{}) (err error) {
 			m[key] = defaultBool(sFiled, sValue.Bool())
 
 		case reflect.Struct:
-			_ = Drain(key, sValue.Interface())
-
+			_ = drain(sValue.Interface(), key, m)
 		}
 
 	}
