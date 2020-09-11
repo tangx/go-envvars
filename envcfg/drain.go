@@ -8,7 +8,7 @@ import (
 	yamlv3 "gopkg.in/yaml.v3"
 )
 
-func Drain(v interface{}, prefix string) (err error) {
+func Drain(v interface{}, prefix string, config string) (err error) {
 
 	m := &yamlv3.Node{
 		Kind: 4,
@@ -22,7 +22,7 @@ func Drain(v interface{}, prefix string) (err error) {
 	if err != nil {
 		panic(err)
 	}
-	_ = WriteToFile(configFile, b)
+	_ = WriteToFile(config, b)
 	return
 }
 
@@ -92,6 +92,9 @@ func drain(v interface{}, prefix string, m *yamlv3.Node) (err error) {
 			_ = drain(sValue.Interface(), key, m)
 		}
 
+		if yamlTag == "" {
+			continue
+		}
 		m.Content = append(m.Content, combineContent(key, valueTag, commentTag, yamlTag)...)
 
 	}

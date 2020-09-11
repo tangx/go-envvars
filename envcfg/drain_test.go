@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+const (
+	configFile = `__snapshot__/default.yml`
+)
+
 func TestDrain(t *testing.T) {
 
 	// p := Person{"zhangsan", 10, true, Address{"sichuan", "chengdu", 10}}
@@ -12,7 +16,7 @@ func TestDrain(t *testing.T) {
 	p := Person{
 		Name: "zhangsan",
 	}
-	_ = Drain(p, "USER")
+	_ = Drain(p, "USER", configFile)
 
 }
 
