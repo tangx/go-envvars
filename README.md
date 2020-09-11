@@ -8,7 +8,7 @@
 + env field
   - [x] env
   - [x] default
-  - [ ] summary
+  - [x] comment
 
 + env support type
   + time.Duration
