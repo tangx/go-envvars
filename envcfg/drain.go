@@ -59,34 +59,59 @@ func drain(v interface{}, prefix string, m *yamlv3.Node) (err error) {
 		key := strings.ToUpper(fmt.Sprintf("%s__%s", prefix, envTagName))
 		sValue := rv.Field(i)
 
+		var yamlTag string
 		switch sValue.Kind() {
 		case reflect.String:
-			contents := Yamlv3Marshal(key, valueTag, commentTag, "!!str")
-
-			m.Content = append(m.Content, contents...)
+			yamlTag = "!!str"
 
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 			if valueTag == "" {
 				valueTag = "0"
 			}
-			m.Content = append(m.Content, Yamlv3Marshal(key, valueTag, commentTag, "!!int")...)
+			yamlTag = "!!int"
+
+			// time.Duration
+			if IsTimeDuration(sValue) {
+				yamlTag = "!!str"
+			}
 
 		case reflect.Uint, reflect.Uint8, reflect.Uint32, reflect.Uint64:
 			if valueTag == "" {
 				valueTag = "0"
 			}
-			m.Content = append(m.Content, Yamlv3Marshal(key, valueTag, commentTag, "!!int")...)
+
+			yamlTag = "!!int"
 
 		case reflect.Bool:
 			if valueTag == "" {
 				valueTag = "false"
 			}
-			m.Content = append(m.Content, Yamlv3Marshal(key, valueTag, commentTag, "!!bool")...)
+			yamlTag = "!!bool"
 
 		case reflect.Struct:
 			_ = drain(sValue.Interface(), key, m)
 		}
+
+		m.Content = append(m.Content, combineContent(key, valueTag, commentTag, yamlTag)...)
+
 	}
 
 	return
+}
+
+func combineContent(key string, value interface{}, comment string, tag string) []*yamlv3.Node {
+
+	k := &yamlv3.Node{
+		Kind:        8,
+		Value:       key,
+		HeadComment: comment,
+	}
+	v := &yamlv3.Node{
+		Kind:  8,
+		Value: value.(string),
+		Tag:   tag,
+	}
+
+	return []*yamlv3.Node{k, v}
+
 }

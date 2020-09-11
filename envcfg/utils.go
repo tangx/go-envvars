@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"reflect"
 
 	yamlv3 "gopkg.in/yaml.v3"
 )
@@ -31,20 +32,7 @@ func WriteToFile(file string, b []byte) (err error) {
 	return WriteTo(f, b)
 }
 
-func Yamlv3Marshal(key string, value interface{}, comment string, tag string) []*yamlv3.Node {
-
-	k := &yamlv3.Node{
-		Kind:        8,
-		Value:       key,
-		HeadComment: comment,
-	}
-	v := &yamlv3.Node{
-		Kind:  8,
-		Value: value.(string),
-		// Tag: "!!str",
-		Tag: tag,
-	}
-
-	return []*yamlv3.Node{k, v}
-
+func IsTimeDuration(v reflect.Value) bool {
+	typ := v.Type()
+	return v.Kind() == reflect.Int64 && typ.PkgPath() == "time" && typ.Name() == "Duration"
 }
