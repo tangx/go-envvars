@@ -61,7 +61,7 @@ func drain(v interface{}, prefix string, m map[string]interface{}) (err error) {
 		return err
 	}
 
-	err = WriteToFile("config.yml", b)
+	err = WriteToFile("default.yml", b)
 	return
 }
 
