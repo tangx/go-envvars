@@ -3,7 +3,7 @@
 ## todo
 
 + env struct
-  +[x] nested env: `sValue:=rv.Filed(i); sValue.Interface()`
+  + [x] nested env: `sValue:=rv.Filed(i); sValue.Interface()`
 
 + env field
   - [x] env
@@ -12,7 +12,8 @@
 
 + env support type
   + [x] time.Duration
-  + [x] int,int8,int16,int32,int64
+  + [x] int, int8, int16, int32, int64
+  + [x] uint, uint8, uint16, uint32, uint64
   + [x] string
   + [x] bool
 
