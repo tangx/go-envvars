@@ -1,0 +1,14 @@
+{
+    "KEY_A": {
+        "summary": "name",
+        "value": "zhangsan"
+    },
+    "KEY_B": {
+        "summary": "age",
+        "value": 18
+    },
+    "KEY_C": {
+        "summary": "gender: true for male, false for female",
+        "value": true
+    }
+}

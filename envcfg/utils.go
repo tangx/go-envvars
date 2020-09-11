@@ -6,11 +6,11 @@ import (
 	"log"
 	"os"
 
-	"gopkg.in/yaml.v2"
+	yamlv3 "gopkg.in/yaml.v3"
 )
 
 func YamlMarshal(v interface{}) ([]byte, error) {
-	return yaml.Marshal(v)
+	return yamlv3.Marshal(v)
 }
 
 func WriteTo(w io.Writer, b []byte) (err error) {
@@ -27,4 +27,22 @@ func WriteToFile(path string, b []byte) (err error) {
 	}
 	defer f.Close()
 	return WriteTo(f, b)
+}
+
+func Yamlv3Marshal(key string, value interface{}, comment string, tag string) []*yamlv3.Node {
+
+	k := &yamlv3.Node{
+		Kind:        8,
+		Value:       key,
+		HeadComment: comment,
+	}
+	v := &yamlv3.Node{
+		Kind:  8,
+		Value: value.(string),
+		// Tag: "!!str",
+		Tag: tag,
+	}
+
+	return []*yamlv3.Node{k, v}
+
 }

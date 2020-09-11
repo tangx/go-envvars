@@ -1,0 +1,11 @@
+# user name
+USER__NAME: zhuageliang
+# user age
+USER__AGE: 18
+# user gender
+USER__GENDER: true
+USER__ADDRESS__CITY: sichuan
+# apartment address street
+USER__ADDRESS__STREET: ""
+# apartment address number
+USER__ADDRESS__NUMBER: 99999182

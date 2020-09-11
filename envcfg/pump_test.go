@@ -9,7 +9,7 @@ import (
 )
 
 func TestPump(t *testing.T) {
-	f := `config.yml`
+	f := configFile
 	_ = PumpFileToEnv(f)
 
 	println(os.Getenv("USER__ADDRESS__NUMBER"))
