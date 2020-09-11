@@ -36,14 +36,14 @@ func drain(v interface{}, prefix string, m *yamlv3.Node) (err error) {
 		sFiled := typ.Field(i)
 
 		envTag, ok := sFiled.Tag.Lookup("env")
-
-		if !ok {
-			continue
-		}
-
-		envTagName := strings.Split(envTag, ",")[0]
-		if envTagName == "-" {
-			continue
+		var envTagName string
+		if ok {
+			envTagName = strings.Split(envTag, ",")[0]
+			if envTagName == "-" {
+				continue
+			}
+		} else {
+			envTagName = sFiled.Name
 		}
 
 		commentTag := sFiled.Tag.Get("comment")

@@ -3,7 +3,6 @@ package envcfg
 import (
 	"bytes"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -26,7 +25,8 @@ func WriteToFile(file string, b []byte) (err error) {
 	_ = os.MkdirAll(filepath.Dir(file), os.ModePerm)
 	f, err := os.OpenFile(file, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
-		log.Fatal(err)
+		// log.Fatal(err)
+		panic(err)
 	}
 	defer f.Close()
 	return WriteTo(f, b)
