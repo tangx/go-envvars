@@ -20,5 +20,5 @@
 + env action
   + [x] drain: `convert` struct to os env
   + [x] setenv: `load` os env to struct
-  + `env` to `config.yml`
+  + [x] `env` to `config.yml` : 使用 `New() *EnvCfg` 可指定 `config.yml` 路径及文件名
 

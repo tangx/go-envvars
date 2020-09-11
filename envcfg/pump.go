@@ -82,7 +82,10 @@ func pump(v interface{}, prefix string, m map[string]interface{}) {
 }
 
 func mustBool(str string) bool {
-	boolean, _ := strconv.ParseBool(str)
+	boolean, err := strconv.ParseBool(str)
+	if err != nil {
+		panic(err)
+	}
 
 	return boolean
 }
@@ -104,10 +107,6 @@ func mustUint(str string) uint64 {
 }
 
 func mustTimeDuration(str string) time.Duration {
-	if str == "" {
-		return 0
-	}
-
 	dur, err := time.ParseDuration(str)
 	if err != nil {
 		panic(err)
