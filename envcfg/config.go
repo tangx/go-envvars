@@ -3,5 +3,5 @@ package envcfg
 const ()
 
 const (
-	configFile = `default.yml`
+	configFile = `__snapshot__/default.yml`
 )

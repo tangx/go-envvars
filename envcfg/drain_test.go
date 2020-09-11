@@ -2,6 +2,7 @@ package envcfg
 
 import (
 	"testing"
+	"time"
 )
 
 func TestDrain(t *testing.T) {
@@ -20,6 +21,7 @@ type Person struct {
 	Age     uint   `env:"age,omitempty" default:"18" yaml:"age,omitempty" comment:"user age"`
 	Gender  bool   `env:"gender,omitempty" default:"true" yaml:"gender,omitempty" comment:"user gender"`
 	Address `env:"address,omitempty" yaml:"address,omitempty" comment:"user address"`
+	Timeout time.Duration `env:"timeout" yaml:"timeout" comment:"timeout to work" default:"5m"`
 }
 
 type Address struct {

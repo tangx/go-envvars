@@ -9,3 +9,5 @@ USER__ADDRESS__CITY: sichuan
 USER__ADDRESS__STREET: ""
 # apartment address number
 USER__ADDRESS__NUMBER: 99999182
+# timeout to work
+USER__TIMEOUT: 5m

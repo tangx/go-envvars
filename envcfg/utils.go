@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 
 	yamlv3 "gopkg.in/yaml.v3"
 )
@@ -20,8 +21,9 @@ func WriteTo(w io.Writer, b []byte) (err error) {
 	return
 }
 
-func WriteToFile(path string, b []byte) (err error) {
-	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
+func WriteToFile(file string, b []byte) (err error) {
+	_ = os.MkdirAll(filepath.Dir(file), os.ModePerm)
+	f, err := os.OpenFile(file, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}

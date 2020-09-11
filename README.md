@@ -11,7 +11,7 @@
   - [x] comment
 
 + env support type
-  + time.Duration
+  + [x] time.Duration
   + [x] int,int8,int16,int32,int64
   + [x] string
   + [x] bool

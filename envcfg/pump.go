@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 
 	"gopkg.in/yaml.v2"
 )
@@ -52,13 +53,20 @@ func pump(v interface{}, prefix string, m map[string]interface{}) {
 			m[tagName] = os.Getenv(key)
 
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-			m[tagName] = shouldInt(os.Getenv(key))
+
+			typ := sValue.Type()
+			// time.Duration
+			if sValue.Kind() == reflect.Int64 && typ.PkgPath() == "time" && typ.Name() == "Duration" {
+				m[tagName] = mustTimeDuration(os.Getenv(key))
+			} else {
+				m[tagName] = mustInt(os.Getenv(key))
+			}
 
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-			m[tagName] = shouldUint(os.Getenv(key))
+			m[tagName] = mustUint(os.Getenv(key))
 
 		case reflect.Bool:
-			m[tagName] = shouldBool(os.Getenv(key))
+			m[tagName] = mustBool(os.Getenv(key))
 
 		case reflect.Struct:
 			// fmt.Printf("m[%s]", tagName)
@@ -109,19 +117,36 @@ func shouldString(v interface{}) string {
 	return ""
 }
 
-func shouldBool(str string) bool {
+func mustBool(str string) bool {
 	boolean, _ := strconv.ParseBool(str)
 
 	return boolean
 }
 
-func shouldInt(str string) int64 {
-	i, _ := strconv.ParseInt(str, 10, 64)
-
+func mustInt(str string) int64 {
+	i, err := strconv.ParseInt(str, 10, 64)
+	if err != nil {
+		panic(err)
+	}
 	return i
 }
 
-func shouldUint(str string) uint64 {
-	i, _ := strconv.ParseUint(str, 10, 64)
+func mustUint(str string) uint64 {
+	i, err := strconv.ParseUint(str, 10, 64)
+	if err != nil {
+		panic(err)
+	}
 	return i
+}
+
+func mustTimeDuration(str string) time.Duration {
+	if str == "" {
+		return 0
+	}
+
+	dur, err := time.ParseDuration(str)
+	if err != nil {
+		panic(err)
+	}
+	return dur
 }
