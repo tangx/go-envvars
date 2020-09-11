@@ -2,8 +2,6 @@ package envcfg
 
 import (
 	"testing"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 func TestRoot(t *testing.T) {
@@ -17,8 +15,8 @@ func TestRoot(t *testing.T) {
 
 	_ = e.Drain(config)
 
-	_ = LoadConfigFileToEnv(e.Config)
-	_ = e.Pump(config)
+	// _ = LoadConfigFileToEnv(e.Config)
+	// _ = e.Pump(config)
 
-	spew.Dump(config)
+	// spew.Dump(config)
 }

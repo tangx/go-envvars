@@ -34,17 +34,23 @@ func drain(v interface{}, prefix string, m *yamlv3.Node) (err error) {
 	typ := rv.Type()
 	for i := 0; i < typ.NumField(); i++ {
 		sFiled := typ.Field(i)
+		sValue := rv.Field(i)
 
 		envTag, ok := sFiled.Tag.Lookup("env")
 		var envTagName string
-		if ok {
-			envTagName = strings.Split(envTag, ",")[0]
-			if envTagName == "-" {
-				continue
+		if !ok {
+			if sFiled.Type.Kind() == reflect.Struct {
+				envTagName = sFiled.Name
+				key := strings.ToUpper(fmt.Sprintf("%s__%s", prefix, envTagName))
+				_ = drain(sValue.Interface(), key, m)
 			}
-		} else {
-			envTagName = sFiled.Name
+			continue
 		}
+		envTagName = strings.Split(envTag, ",")[0]
+		if envTagName == "-" || envTagName == "" {
+			continue
+		}
+		key := strings.ToUpper(fmt.Sprintf("%s__%s", prefix, envTagName))
 
 		commentTag := sFiled.Tag.Get("comment")
 		if commentTag == "-" {
@@ -55,9 +61,6 @@ func drain(v interface{}, prefix string, m *yamlv3.Node) (err error) {
 		if valueTag == "-" {
 			valueTag = ""
 		}
-
-		key := strings.ToUpper(fmt.Sprintf("%s__%s", prefix, envTagName))
-		sValue := rv.Field(i)
 
 		var yamlTag string
 		switch sValue.Kind() {
@@ -88,8 +91,8 @@ func drain(v interface{}, prefix string, m *yamlv3.Node) (err error) {
 			}
 			yamlTag = "!!bool"
 
-		case reflect.Struct:
-			_ = drain(sValue.Interface(), key, m)
+			// case reflect.Struct:
+			// 	_ = drain(sValue.Interface(), key, m)
 		}
 
 		if yamlTag == "" {

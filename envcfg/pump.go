@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"gopkg.in/yaml.v2"
 )
 
@@ -23,11 +22,7 @@ func Pump(v interface{}, prefix string) error {
 		return err
 	}
 
-	fmt.Println(string(b))
-
-	_ = yaml.Unmarshal(b, v)
-	spew.Dump(v)
-	return nil
+	return yaml.Unmarshal(b, v)
 }
 
 // pump value from env to struct
@@ -43,6 +38,7 @@ func pump(v interface{}, prefix string, m map[string]interface{}) {
 	typ := rv.Type()
 	for i := 0; i < typ.NumField(); i++ {
 		sFiled := typ.Field(i)
+		sValue := rv.Field(i)
 
 		tag, ok := sFiled.Tag.Lookup("env")
 		var tagName string
@@ -54,7 +50,6 @@ func pump(v interface{}, prefix string, m map[string]interface{}) {
 
 		key := strings.ToUpper(fmt.Sprintf("%s__%s", prefix, tagName))
 
-		sValue := rv.Field(i)
 		switch sValue.Kind() {
 		case reflect.String:
 			m[tagName] = os.Getenv(key)
@@ -77,7 +72,6 @@ func pump(v interface{}, prefix string, m map[string]interface{}) {
 			m[tagName] = mustBool(os.Getenv(key))
 
 		case reflect.Struct:
-			// fmt.Printf("m[%s]", tagName)
 			m2 := map[string]interface{}{}
 			pump(sValue.Interface(), key, m2)
 
